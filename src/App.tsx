@@ -77,8 +77,8 @@ export function App() {
           <Table>
             <TableHeader>
               <TableHead>ID</TableHead>
-              <TableHead>Produtos</TableHead>
-              <TableHead>Preço</TableHead>
+              <TableHead>Membro</TableHead>
+              <TableHead>Cargo</TableHead>
             </TableHeader>
             {filteredUsers.map((user) => {
               return (
