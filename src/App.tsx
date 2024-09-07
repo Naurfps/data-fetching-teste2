@@ -4,36 +4,36 @@ import { Input } from "./components/ui/input";
 import { Table, TableCell, TableHead, TableHeader, TableRow } from "./components/ui/table";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./components/ui/dialog";
 import { Label } from "./components/ui/label";
-import { useEffect, useState } from "react";
-
-type Users = {
-  id: number;
-  name: string;
-  role: string;
-}
+import { users } from "./data/users"
+import { useState } from "react";
 
 export function App() {
-  const [users, setUsers] = useState<Users[]>([]);
+  const [filterName, setFilterName] = useState<string>("");
+  const [filterId, setFilterId] = useState<string>();
 
-  useEffect(() => {
-    fetch("http://localhost:3000/users")
-    .then(res => res.json())
-    .then(data => {
-      setUsers(data);
-    })
-  },[])
-
+  const filteredUsers = users.filter((user) => {
+    const matchesName = user.name.toLowerCase().includes(filterName.toLowerCase());
+    const matchesId = filterId === '' || user.id === Number(filterId);
+    return matchesName && matchesId;
+  });
+  
   return (
         <div className="p-6 max-w-4xl nx-auto space-y-4">
           <h1 className="text-3xl font-bold">Equipe G5Dev</h1>
         <div className="flex items-center justify-between">
         <form className="flex itens-center gap-2">
-        <Input name="id" placeholder="ID do pedido" />
-        <Input name="name" placeholder="Nome do pedido" />
-        <Button type="submit" variant="link">
-          <Search className="w-4 h-4 mr-2"/>
-          Filtrar resultados
-        </Button>
+        <Input 
+        name="id" 
+        placeholder="ID do Membro" 
+        onChange={(e) => setFilterId(e.target.value)}
+        value={filterId}
+        />
+        <Input 
+        name="name" 
+        placeholder="Nome do Membro" 
+        onChange={(e) => setFilterName(e.target.value)}
+        value={filterName}
+        />
       </form>
 
           <Dialog>
@@ -80,9 +80,9 @@ export function App() {
               <TableHead>Produtos</TableHead>
               <TableHead>Preço</TableHead>
             </TableHeader>
-            {users.map((user) => {
+            {filteredUsers.map((user) => {
               return (
-                <TableRow>
+                <TableRow key={user.id}>
                   <TableCell>{user.id}</TableCell>
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.role}</TableCell>
